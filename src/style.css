@@ -1,0 +1,364 @@
+@import "tailwindcss";
+
+:root {
+  /* Blueprint Background Tokens */
+  --blue-900: #245A8C;
+  --blue-700: #2F6496;
+  --blue-500: #4A80B3;
+  --blue-300: #8FBCDD;
+  --blue-100: #CFEAF2;
+  --white-glow: #FFFFFF;
+
+  /* Pixel Accent Tokens */
+  --lavender: #B8BDE0;
+  --ice: #BFE3EE;
+  --mint: #D3E8D4;
+  --sage: #CFE3D6;
+  --ash: #D9D6D6;
+
+  /* Semantic Tokens */
+  --success: #9BD8B0;
+  --warning: #F2D98C;
+  --danger: #F09A9A;
+  --text-on-dark: #FFFFFF;
+  --text-on-light: #1D3F63;
+}
+
+@layer base {
+  body {
+    background-color: var(--blue-700);
+    background-image: url("./assets/bg.png");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: var(--text-on-dark);
+    font-family: 'Press Start 2P', monospace;
+    min-height: 100vh;
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* Keyboard Accessibility Focus Indicator */
+  :focus-visible {
+    outline: 4px solid var(--mint) !important;
+    outline-offset: 2px !important;
+  }
+
+  /* Interaction Affordances: All buttons and interactive links have pointer cursor */
+  button, select, input[type="button"], input[type="submit"], a[href] {
+    cursor: pointer;
+  }
+
+  button:disabled, select:disabled, input:disabled {
+    cursor: not-allowed;
+  }
+}
+
+/* Typography Classes */
+.font-pixel {
+  font-family: 'Press Start 2P', monospace;
+}
+
+.font-pixel-body {
+  font-family: 'VT323', monospace;
+}
+
+.font-silkscreen {
+  font-family: 'Silkscreen', monospace;
+}
+
+/* Blueprint Frosted Glass Panel */
+.pixel-panel {
+  background: rgba(47, 100, 150, 0.58);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 4px solid var(--blue-300);
+  border-radius: 0;
+  box-shadow: 6px 6px 0px rgba(36, 90, 140, 0.7);
+  color: var(--text-on-dark);
+}
+
+/* Primary Button (SNAP / START) */
+.btn-primary {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 13px;
+  text-transform: uppercase;
+  background-color: var(--mint);
+  color: var(--text-on-light);
+  border: 4px solid var(--white-glow);
+  border-radius: 0;
+  padding: 12px 22px;
+  box-shadow: 4px 4px 0px var(--blue-900);
+  cursor: pointer;
+  transition: transform 0.08s steps(2), box-shadow 0.08s steps(2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px var(--blue-900);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0px var(--blue-900);
+  background-color: var(--sage);
+}
+
+.btn-primary:disabled {
+  background-color: var(--ash);
+  color: var(--blue-700);
+  opacity: 0.6;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Secondary Button */
+.btn-secondary {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  background-color: rgba(36, 90, 140, 0.65);
+  color: #ffffff;
+  border: 3px solid var(--lavender);
+  border-radius: 0;
+  padding: 8px 14px;
+  box-shadow: 3px 3px 0px var(--blue-900);
+  cursor: pointer;
+  transition: transform 0.08s steps(2), box-shadow 0.08s steps(2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px var(--blue-900);
+  background-color: var(--blue-500);
+}
+
+.btn-secondary:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px 0px var(--blue-900);
+}
+
+.btn-secondary:disabled {
+  border-color: var(--ash);
+  color: var(--ash);
+  opacity: 0.5;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Pixel Chip for Filter / Option Buttons */
+.pixel-chip {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  border: 2px solid var(--blue-300);
+  background: rgba(36, 90, 140, 0.7);
+  color: var(--blue-100);
+  box-shadow: 2px 2px 0px var(--blue-900);
+  border-radius: 0;
+  cursor: pointer;
+  transition: transform 0.08s steps(2), box-shadow 0.08s steps(2);
+}
+
+.pixel-chip:hover:not(.active) {
+  background: rgba(74, 128, 179, 0.85);
+  color: #ffffff;
+}
+
+.pixel-chip.active {
+  background: var(--mint);
+  color: var(--text-on-light);
+  border-color: #ffffff;
+  box-shadow: 2px 2px 0px var(--blue-900);
+}
+
+/* Camera Frame Double Border (4px White + 4px Lavender) */
+.camera-double-frame {
+  border: 4px solid var(--lavender);
+  box-shadow: 
+    0 0 0 4px #ffffff,
+    6px 6px 0px rgba(36, 90, 140, 0.8);
+}
+
+/* Pixel L-Corner Marker */
+.pixel-corner-l {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  z-index: 25;
+}
+
+.pixel-corner-tl {
+  top: 6px;
+  left: 6px;
+  border-top: 3px solid var(--ice);
+  border-left: 3px solid var(--ice);
+}
+
+.pixel-corner-tr {
+  top: 6px;
+  right: 6px;
+  border-top: 3px solid var(--ice);
+  border-right: 3px solid var(--ice);
+}
+
+.pixel-corner-bl {
+  bottom: 6px;
+  left: 6px;
+  border-bottom: 3px solid var(--ice);
+  border-left: 3px solid var(--ice);
+}
+
+.pixel-corner-br {
+  bottom: 6px;
+  right: 6px;
+  border-bottom: 3px solid var(--ice);
+  border-right: 3px solid var(--ice);
+}
+
+/* Camera Composition Blueprint Grid */
+.camera-blueprint-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: 
+    linear-gradient(rgba(143, 188, 221, 0.22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(143, 188, 221, 0.22) 1px, transparent 1px);
+  background-size: 33.333% 33.333%;
+  z-index: 10;
+}
+
+/* Viewport Decorative Pixel Overlays */
+.deco-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  pointer-events: none;
+  image-rendering: pixelated;
+  z-index: 0;
+  animation: decoFloat 5s steps(8) infinite alternate;
+}
+
+.deco-tl { animation-delay: 0s; }
+.deco-tr { animation-delay: -1.2s; }
+.deco-br { animation-delay: -2.5s; }
+.deco-bl { animation-delay: -3.8s; }
+
+@keyframes decoFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(7px); }
+}
+
+/* Viewfinder Corner Pixel Decorations (DESIGN.md Section 2 & User Request) */
+.deco-vf {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  image-rendering: pixelated;
+  z-index: 22;
+}
+
+.deco-vf-tl {
+  transform-origin: top left;
+  animation: vfFloatTL 4s steps(6) infinite alternate;
+}
+
+.deco-vf-tr {
+  transform-origin: top right;
+  animation: vfFloatTR 4s steps(6) infinite alternate -1s;
+}
+
+.deco-vf-br {
+  transform-origin: bottom right;
+  animation: vfFloatBR 4s steps(6) infinite alternate -2s;
+}
+
+.deco-vf-bl {
+  transform-origin: bottom left;
+  animation: vfFloatBL 4s steps(6) infinite alternate -3s;
+}
+
+@keyframes vfFloatTL {
+  0% { transform: scale(0.6) translate(0, 0); }
+  100% { transform: scale(0.6) translate(2px, 3px); }
+}
+
+@keyframes vfFloatTR {
+  0% { transform: scale(0.6) translate(0, 0); }
+  100% { transform: scale(0.6) translate(-2px, 3px); }
+}
+
+@keyframes vfFloatBR {
+  0% { transform: scale(0.6) translate(0, 0); }
+  100% { transform: scale(0.6) translate(-2px, -3px); }
+}
+
+@keyframes vfFloatBL {
+  0% { transform: scale(0.6) translate(0, 0); }
+  100% { transform: scale(0.6) translate(2px, -3px); }
+}
+
+/* Countdown Zoom & Pulse */
+@keyframes countdownStep {
+  0% { transform: scale(1.15); opacity: 0.9; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-countdown-step {
+  animation: countdownStep 0.25s steps(4) forwards;
+}
+
+@keyframes pixelBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.animate-pixel-blink {
+  animation: pixelBlink 1s infinite steps(2);
+}
+
+@keyframes cameraFlash {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.animate-flash {
+  animation: cameraFlash 0.35s ease-out forwards;
+}
+
+/* Reduced Motion Override for Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .deco-overlay,
+  .deco-vf-tl,
+  .deco-vf-tr,
+  .deco-vf-br,
+  .deco-vf-bl,
+  .animate-countdown-step,
+  .animate-pixel-blink,
+  .animate-flash {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .deco-vf-tl,
+  .deco-vf-tr,
+  .deco-vf-br,
+  .deco-vf-bl {
+    transform: scale(0.6) !important;
+  }
+}
