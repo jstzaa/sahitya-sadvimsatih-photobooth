@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { Image as ImageIcon } from 'lucide-vue-next'
 
 // Components
@@ -36,33 +36,16 @@ const handleCaptureFrame = (frameIndex) => {
 // Photobooth Composable
 const photobooth = usePhotobooth(handleCaptureFrame)
 
-// Strip Customizer State (Blueprint Theme Defaults from DESIGN.md)
-const stripConfig = reactive({
-  theme: 'blueprint-classic',
-  title: 'SAHITYA PHOTO',
-  subtitle: 'BLUEPRINT STRIP',
-  filter: 'none',
-  showDate: true,
-  dateText: '',
-  sticker: '⭐'
-})
+// Camera & Strip Filter State
+const activeFilter = ref('none')
 
 // Active Filter CSS
 const activeFilterCss = computed(() => {
-  const f = FILTERS.find((item) => item.id === stripConfig.filter)
+  const f = FILTERS.find((item) => item.id === activeFilter.value)
   return f ? f.css : 'none'
 })
 
-// Format Today Date in Pixel Style
-const todayDateString = computed(() => {
-  return new Date().toLocaleDateString('id-ID', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  }).replace(/\//g, '.')
-})
-
-// Download Strip as High-Resolution PNG
+// Download Strip as High-Resolution PNG (600 x 1800)
 const isDownloading = ref(false)
 const downloadStrip = async () => {
   if (!photobooth.capturedPhotos.value[2]) return
@@ -71,17 +54,11 @@ const downloadStrip = async () => {
   try {
     const canvas = await generateStripCanvas({
       photos: photobooth.capturedPhotos.value,
-      theme: stripConfig.theme,
-      title: stripConfig.title,
-      subtitle: stripConfig.subtitle,
-      dateText: stripConfig.dateText || todayDateString.value,
-      filterCss: activeFilterCss.value,
-      showDate: stripConfig.showDate,
-      sticker: stripConfig.sticker
+      filterCss: activeFilterCss.value
     })
 
     const link = document.createElement('a')
-    const fileName = `Photobooth_Blueprint_${stripConfig.title.replace(/\s+/g, '_')}_${Date.now()}.png`
+    const fileName = `Photobooth_Sahitya_Strip_${Date.now()}.png`
     link.download = fileName
     link.href = canvas.toDataURL('image/png')
     link.click()
@@ -139,7 +116,7 @@ onBeforeUnmount(() => {
       />
 
       <!-- Main Workspace Studio Grid -->
-      <main class="grid grid-cols-1 lg:grid-cols-[1fr_390px] gap-5 flex-1 items-start">
+      <main class="grid grid-cols-1 lg:grid-cols-[1fr_340px] xl:grid-cols-[1fr_360px] gap-5 flex-1 items-start">
         <!-- LEFT COLUMN: Camera & Shutter Controls -->
         <section class="flex flex-col">
           <div class="flex flex-col gap-3.5 p-4 sm:p-5 pixel-panel">
@@ -194,20 +171,20 @@ onBeforeUnmount(() => {
               :capture-state="photobooth.captureState.value"
               :current-frame-index="photobooth.currentFrameIndex.value"
               v-model:countdown-duration="photobooth.countdownDuration.value"
-              v-model:active-filter="stripConfig.filter"
+              v-model:active-filter="activeFilter"
               :is-camera-ready="camera.isCameraReady.value"
               @start-capture="photobooth.startAutoCapture"
             />
           </div>
         </section>
 
-        <!-- RIGHT COLUMN: 3-Frame Photobooth Strip Result & Customizer -->
+        <!-- RIGHT COLUMN: 3-Frame Photobooth Strip Result & Action Controls -->
         <section class="flex flex-col">
           <div class="flex flex-col gap-3.5 p-4 sm:p-5 pixel-panel">
             <!-- Strip Header -->
             <div class="flex items-center justify-between">
               <h2 class="font-pixel text-[11px] text-[var(--mint)] flex items-center gap-1.5">
-                <ImageIcon :size="14" class="text-[var(--mint)]" aria-hidden="true" />
+                <ImageIcon :size="13" class="text-[var(--mint)]" aria-hidden="true" />
                 HASIL STRIP FOTO
               </h2>
               <span
@@ -224,24 +201,14 @@ onBeforeUnmount(() => {
               </span>
             </div>
 
-            <!-- Physical 3-Photo Strip Preview Component -->
+            <!-- Physical 3-Photo Strip Preview Component (Fit View) -->
             <PhotoStripPreview
               :captured-photos="photobooth.capturedPhotos.value"
-              :current-theme-id="stripConfig.theme"
               :filter-css="activeFilterCss"
-              :title="stripConfig.title"
-              :subtitle="stripConfig.subtitle"
-              :sticker="stripConfig.sticker"
-              :show-date="stripConfig.showDate"
-              :date-text="stripConfig.dateText"
             />
 
-            <!-- Strip Customizer & Download Component -->
+            <!-- Strip Action Controls Component -->
             <StripCustomizer
-              v-model:theme="stripConfig.theme"
-              v-model:sticker="stripConfig.sticker"
-              v-model:title="stripConfig.title"
-              v-model:subtitle="stripConfig.subtitle"
               :has-finished="photobooth.captureState.value === 'finished' || !!photobooth.capturedPhotos.value[2]"
               :is-downloading="isDownloading"
               :captured-photos="photobooth.capturedPhotos.value"

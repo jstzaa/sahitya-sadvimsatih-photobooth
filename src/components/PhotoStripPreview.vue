@@ -1,110 +1,72 @@
 <script setup>
-import { computed } from 'vue'
 import { Camera } from 'lucide-vue-next'
-import { THEMES } from '../constants/photobooth'
+import frameImg from '../assets/frame.png'
 
-const props = defineProps({
+defineProps({
   capturedPhotos: { type: Array, default: () => [null, null, null] },
-  currentThemeId: { type: String, default: 'blueprint-classic' },
-  filterCss: { type: String, default: 'none' },
-  title: { type: String, default: 'SAHITYA PHOTO' },
-  subtitle: { type: String, default: 'BLUEPRINT STRIP' },
-  sticker: { type: String, default: '⭐' },
-  showDate: { type: Boolean, default: true },
-  dateText: { type: String, default: '' }
+  filterCss: { type: String, default: 'none' }
 })
 
-const activeTheme = computed(() => {
-  return THEMES.find((t) => t.id === props.currentThemeId) || THEMES[0]
-})
-
-const formattedDate = computed(() => {
-  return (
-    props.dateText ||
-    new Date().toLocaleDateString('id-ID', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    }).replace(/\//g, '.')
-  )
-})
+const slots = [
+  { left: '8.6667%', top: '17.8333%', width: '82.6667%', height: '20.8889%' },
+  { left: '8.6667%', top: '41.4444%', width: '82.6667%', height: '20.4444%' },
+  { left: '8.6667%', top: '65.0000%', width: '82.6667%', height: '20.4444%' }
+]
 </script>
 
 <template>
-  <div class="flex justify-center p-3 bg-[rgba(29,63,99,0.5)] border-2 border-[var(--blue-300)] shadow-[3px_3px_0px_var(--blue-900)] max-h-[380px] overflow-y-auto">
-    <!-- Physical Vertical Photo Strip Structure (DESIGN.md Section 7) -->
+  <div class="flex flex-col gap-1.5">
+    <!-- Compact Fit Preview Box -->
     <div
-      class="w-[210px] p-2.5 pb-4 flex flex-col shadow-[4px_4px_0px_rgba(36,90,140,0.8)] border-[6px] border-white transition-all shrink-0"
-      :style="{
-        backgroundColor: activeTheme.bg,
-        color: activeTheme.text
-      }"
+      class="flex justify-center items-center p-2.5 sm:p-3 bg-[rgba(29,63,99,0.5)] border-2 border-[var(--blue-300)] shadow-[3px_3px_0px_var(--blue-900)]"
     >
-      <!-- 3 Photo Frames -->
-      <div class="flex flex-col gap-2">
+      <!-- Frame Strip Container (Fit 1:3 ratio) -->
+      <div
+        class="relative w-[150px] sm:w-[165px] aspect-[1/3] shadow-[3px_3px_0px_rgba(36,90,140,0.8)] border-2 sm:border-3 border-white shrink-0 bg-[#1D3F63] overflow-hidden select-none"
+      >
+        <!-- 3 Photo Slots (Layered behind frame.png) -->
         <div
-          v-for="(photo, index) in capturedPhotos"
+          v-for="(slot, index) in slots"
           :key="index"
-          class="relative w-full aspect-[4/3] overflow-hidden border-2 border-white/80 shadow-[2px_2px_0px_rgba(0,0,0,0.2)]"
+          class="absolute overflow-hidden flex items-center justify-center bg-[#245A8C]"
           :style="{
-            backgroundColor: activeTheme.cardBg
+            left: slot.left,
+            top: slot.top,
+            width: slot.width,
+            height: slot.height
           }"
         >
           <!-- Captured Photo -->
           <img
-            v-if="photo"
-            :src="photo"
+            v-if="capturedPhotos[index]"
+            :src="capturedPhotos[index]"
             :alt="`Hasil Frame Foto ${index + 1}`"
             class="w-full h-full object-cover block"
             style="image-rendering: pixelated;"
             :style="{ filter: filterCss }"
           />
 
-          <!-- Placeholder when waiting for capture -->
+          <!-- Waiting Placeholder -->
           <div
             v-else
-            class="w-full h-full flex flex-col items-center justify-center p-2 text-center"
+            class="w-full h-full flex flex-col items-center justify-center p-1 text-center bg-[var(--blue-900)] text-[var(--ice)]"
           >
-            <Camera :size="20" class="opacity-60 mb-1" aria-hidden="true" />
-            <span class="font-pixel text-[8px] tracking-wider">[ FRAME 0{{ index + 1 }} ]</span>
-            <span class="font-pixel-body text-xs opacity-75 mt-0.5">MENUNGGU...</span>
-          </div>
-
-          <!-- Pixel Tag Badge #01, #02, #03 -->
-          <div 
-            class="absolute top-1 right-1 bg-[var(--blue-900)] text-[var(--ice)] font-pixel text-[7px] px-1 py-0.5 border border-[var(--blue-300)] shadow-[1px_1px_0px_var(--blue-900)]"
-            aria-hidden="true"
-          >
-            #0{{ index + 1 }}
+            <Camera :size="15" class="opacity-60 mb-0.5 text-[var(--mint)]" aria-hidden="true" />
+            <span class="font-pixel text-[6px] text-[var(--ice)] tracking-wider">
+              [ FRAME 0{{ index + 1 }} ]
+            </span>
+            <span class="font-pixel-body text-[9px] text-[var(--mint)] opacity-85">
+              MENUNGGU
+            </span>
           </div>
         </div>
-      </div>
 
-      <!-- Strip Footer Branding & Stamps -->
-      <div class="pt-3 text-center flex flex-col items-center gap-1">
-        <h3 class="font-pixel text-[9px] tracking-tight leading-tight">
-          {{ title || 'SAHITYA PHOTO' }}
-        </h3>
-        <p
-          class="font-pixel-body text-xs leading-tight font-semibold"
-          :style="{ color: activeTheme.subText }"
-        >
-          {{ subtitle || 'BLUEPRINT STRIP' }}
-        </p>
-
-        <!-- Date Stamp in Pixel Monospace -->
-        <p
-          v-if="showDate"
-          class="font-pixel text-[7px] mt-0.5 tracking-wider"
-          :style="{ color: activeTheme.subText }"
-        >
-          ★ {{ formattedDate }} ★
-        </p>
-
-        <!-- Cute Pixel Sticker / Glyph -->
-        <div v-if="sticker" class="text-lg mt-0.5 select-none" aria-hidden="true">
-          {{ sticker }}
-        </div>
+        <!-- Frame Graphic Overlay -->
+        <img
+          :src="frameImg"
+          alt="Frame Strip Sahitya Sadvimsatih"
+          class="absolute inset-0 w-full h-full object-fill pointer-events-none z-10 block"
+        />
       </div>
     </div>
   </div>
