@@ -1,6 +1,6 @@
 <script setup>
 import { Camera } from 'lucide-vue-next'
-import frameImg from '../assets/frame.png'
+import frameImg from '../assets/frame.webp'
 
 defineProps({
   capturedPhotos: { type: Array, default: () => [null, null, null] },

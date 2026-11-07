@@ -45,7 +45,7 @@ const activeFilterCss = computed(() => {
   return f ? f.css : 'none'
 })
 
-// Download Strip as High-Resolution PNG (600 x 1800)
+// Download Strip as High-Resolution JPG (600 x 1800, ~350-450 KB)
 const isDownloading = ref(false)
 const downloadStrip = async () => {
   if (!photobooth.capturedPhotos.value[2]) return
@@ -57,11 +57,23 @@ const downloadStrip = async () => {
       filterCss: activeFilterCss.value
     })
 
+    // Export as high-quality JPEG (0.90) via Blob for fast, memory-efficient download
+    const blob = await new Promise((resolve) => {
+      canvas.toBlob((b) => resolve(b), 'image/jpeg', 0.90)
+    })
+
+    if (!blob) throw new Error('Blob generation failed')
+
+    const objectUrl = URL.createObjectURL(blob)
     const link = document.createElement('a')
-    const fileName = `Photobooth_Sahitya_Strip_${Date.now()}.png`
+    const fileName = `Photobooth_Sahitya_Strip_${Date.now()}.jpg`
     link.download = fileName
-    link.href = canvas.toDataURL('image/png')
+    link.href = objectUrl
     link.click()
+
+    setTimeout(() => {
+      URL.revokeObjectURL(objectUrl)
+    }, 1000)
   } catch (err) {
     console.error('Download strip failed:', err)
   } finally {
@@ -74,7 +86,7 @@ const downloadSinglePhoto = (index) => {
   const photo = photobooth.capturedPhotos.value[index]
   if (!photo) return
   const link = document.createElement('a')
-  link.download = `Blueprint_Frame_${index + 1}_${Date.now()}.png`
+  link.download = `Blueprint_Frame_${index + 1}_${Date.now()}.jpg`
   link.href = photo
   link.click()
 }

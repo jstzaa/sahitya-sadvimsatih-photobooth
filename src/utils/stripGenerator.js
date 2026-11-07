@@ -1,4 +1,4 @@
-import defaultFrameSrc from '../assets/frame.png'
+import defaultFrameSrc from '../assets/frame.webp'
 
 export async function generateStripCanvas({
   photos,

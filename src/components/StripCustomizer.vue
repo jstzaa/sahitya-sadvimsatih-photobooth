@@ -23,10 +23,10 @@ const emit = defineEmits([
         @click="emit('download-strip')"
         :disabled="!hasFinished || isDownloading"
         class="btn-primary flex-2 flex items-center justify-center gap-2 py-3 px-4 text-[10px]"
-        aria-label="Simpan Strip Foto dalam Format PNG (600 x 1800)"
+        aria-label="Simpan Strip Foto dalam Format JPG (600 x 1800)"
       >
         <Download :size="14" class="text-[var(--text-on-light)]" aria-hidden="true" />
-        <span>{{ isDownloading ? 'MENYIMPAN...' : 'SAVE STRIP' }}</span>
+        <span>{{ isDownloading ? 'MENYIMPAN...' : 'SAVE STRIP (JPG)' }}</span>
       </button>
 
       <button
